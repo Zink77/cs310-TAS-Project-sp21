@@ -2,9 +2,14 @@
 
 
 Team D
+
 Group Members:
 
+
 Payton Askew
+
 Jordan Johnson (ScrumMaster)
+
 Paul Stone
+
 Stephanie Thompson
