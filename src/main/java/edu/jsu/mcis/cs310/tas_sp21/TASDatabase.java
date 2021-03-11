@@ -14,7 +14,7 @@ public class TASDatabase {
 
         try {
 
-            String server = ("jdbc:mysql://localhost/p2_test");
+            String server = ("jdbc:mysql://localhost/tas");
             String username = "tasuser";
             String password = "PrestigeWorldwideD";
             System.out.println("Connecting to " + server + "...");
