@@ -1,6 +1,9 @@
 package edu.jsu.mcis.cs310.tas_sp21;
 
+import java.util.*;
 import java.time.LocalTime;
+import java.time.temporal.*;
+
 
 public class Shift 
 {
@@ -17,18 +20,20 @@ public class Shift
     
     private int lunchduration;
 
-    public Shift(int id, String description, LocalTime start, LocalTime stop, int interval, int graceperiod, int dock, LocalTime lunchstop, int lunchdeduct) 
+    public Shift(int id, String description, String start, String stop, int interval, int graceperiod, int dock, String lunchstart, String lunchstop, int lunchdeduct) 
     {
         this.id = id;
         this.description = description;
-        this.start = start;
-        this.stop = stop;
+        this.start = LocalTime.parse(start);
+        this.stop = LocalTime.parse(stop);
         this.interval = interval;
         this.graceperiod = graceperiod;
         this.dock = dock;
-        this.lunchstop = lunchstop;
+        this.lunchstart = LocalTime.parse(lunchstart);
+        this.lunchstop = LocalTime.parse(lunchstop);
         this.lunchdeduct = lunchdeduct;
     }
+    
 
     public int getId() {
         return id;
@@ -80,8 +85,9 @@ public class Shift
         StringBuilder s = new StringBuilder();
         
         s.append(description).append(": ").append(start).append(" - ").append(stop);
-        s.append(" (").append(interval).append("); ").append("Lunch: ").append(lunchstart);
-        s.append(" - ").append(lunchstop).append(" (" ).append(lunchdeduct).append(")");
+        s.append(" (").append(start.until(stop, ChronoUnit.MINUTES)).append(" minutes);"); 
+        s.append(" Lunch: ").append(lunchstart).append(" - ").append(lunchstop);
+        s.append(" (" ).append(lunchstart.until(lunchstop, ChronoUnit.MINUTES)).append(" minutes)");
         
         return ( s.toString() );
     }
