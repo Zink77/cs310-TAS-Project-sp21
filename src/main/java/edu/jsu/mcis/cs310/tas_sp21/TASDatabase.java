@@ -1,6 +1,8 @@
 package edu.jsu.mcis.cs310.tas_sp21;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class TASDatabase {
@@ -46,12 +48,46 @@ public class TASDatabase {
 
 
     }
-    public Punch getPunch(int punchid){
-        return null;
-    }
     public Badge getBadge(String badgeid){
         return null;
     }
+    
+    public Punch getPunch(int punchid){
+        
+        String query = "SELECT * FROM punch WHERE id=" + punchid;
+        try {
+            PreparedStatement pstSelect = conn.prepareStatement(query);
+        } catch (SQLException ex) {
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+            ResultSet resultset = pstSelect.getResultSet();
+        } catch (SQLException ex) {
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        Badge someBadge = null;
+        try {
+            someBadge = getBadge(resultset.getString("badgeid"));
+        } catch (SQLException ex) {
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+        
+        Punch userPunch = null;
+        try {
+            userPunch = new Punch(someBadge,resultset.getInt("terminalid"), resultset.getInt("punchtypeid"));
+        } catch (SQLException ex) {
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+        
+        return userPunch;
+    }
+
     public Shift getShiftbyID(int shiftid){
         return null;
     }

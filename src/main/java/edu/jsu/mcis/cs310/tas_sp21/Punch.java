@@ -16,7 +16,7 @@ public class Punch {
     private String adjustmentType;
     private int punchTypeID;
     
-    public void Punch(Badge badge, int terminalid, int punchtypeid){
+    public Punch(Badge badge, int terminalid, int punchtypeid){
         this.BadgeID = badge.getId();
         this.terminalID = terminalid;
         this.punchTypeID = punchtypeid;
