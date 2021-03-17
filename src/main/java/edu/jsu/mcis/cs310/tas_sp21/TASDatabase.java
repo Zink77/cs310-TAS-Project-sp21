@@ -58,36 +58,32 @@ public class TASDatabase {
     
     public Punch getPunch(int punchid){
         
-        String query = "SELECT * FROM punch WHERE id=" + punchid;
-        try {
-            PreparedStatement pstSelect = conn.prepareStatement(query);
-        } catch (SQLException ex) {
-            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String query = "SELECT * FROM punch WHERE id=";
+        query+= punchid;
+        //System.out.println(query);
+        
         
         try {
-            ResultSet resultset = pstSelect.getResultSet();
-        } catch (SQLException ex) {
-            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+            pstSelect = conn.prepareStatement(query);
+            ResultSet result = pstSelect.executeQuery();
+            
+            result.next();
+
+
+            Badge someBadge = new Badge(result.getString("badgeid"), "");
+            
+            Punch userPunch = new Punch(someBadge,result.getInt("terminalid"), result.getInt("punchtypeid"));
+
+            Timestamp converterTime = Timestamp.valueOf(result.getString("originaltimestamp"));
+            userPunch.setOriginalTime(converterTime.getTime());
+            System.out.println(userPunch.printOriginalTimestamp());
+            return userPunch;
+            
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            return null;
         }
         
-        
-        Badge someBadge = null;
-        try {
-            someBadge = getBadge(resultset.getString("badgeid"));
-        } catch (SQLException ex) {
-            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       
-        
-        Punch userPunch = null;
-        try {
-            userPunch = new Punch(someBadge,resultset.getInt("terminalid"), resultset.getInt("punchtypeid"));
-        } catch (SQLException ex) {
-            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return userPunch;
     }
 
     

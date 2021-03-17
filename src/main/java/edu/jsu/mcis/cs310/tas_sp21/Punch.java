@@ -1,5 +1,9 @@
 package edu.jsu.mcis.cs310.tas_sp21;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 
 /*
 *
@@ -68,7 +72,7 @@ public class Punch {
     }
 
     public void setOriginalTime(long originalTime) {
-        this.originalTime = originalTime;
+        this.originalTime = (originalTime);
     }
 
     public void setAdjustedTime(long adjustedTime) {
@@ -87,16 +91,24 @@ public class Punch {
         
         StringBuilder string = new StringBuilder();
         
+        GregorianCalendar thisCalendar = new GregorianCalendar();
+        thisCalendar.setTimeInMillis(this.originalTime);
+        
+        Date thisDate = thisCalendar.getTime();
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("E MM/dd/yyyy HH:mm:ss");
+        
+        
         if (this.getPunchTypeID() == 1){
-            string.append("#" + this.getBadgeID() + " CLOCKED IN:" + this.getAdjustedTime());
+            string.append("#" + this.getBadgeID() + " CLOCKED IN: " + formatter.format(thisDate).toUpperCase());
         }
         
         else if (this.getPunchTypeID() == 0){
-            string.append("#" + this.getBadgeID() + " CLOCKED OUT:" + this.getAdjustedTime());
+            string.append("#" + this.getBadgeID() + " CLOCKED OUT: " + formatter.format(thisDate).toUpperCase());
         }
         
         else{
-            string.append("#" + this.getBadgeID() + " TIMED OUT:" + this.getAdjustedTime());
+            string.append("#" + this.getBadgeID() + " TIMED OUT: " + formatter.format(thisDate).toUpperCase());
         }
         
         return string.toString();
