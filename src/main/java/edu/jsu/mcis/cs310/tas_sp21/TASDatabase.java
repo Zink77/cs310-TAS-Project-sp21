@@ -51,9 +51,13 @@ public class TASDatabase {
 
     }
     public Badge getBadge(String badgeid){
+
         return null;
-    }
         
+    }
+            
+        
+       
  
     
     public Punch getPunch(int punchid){
@@ -109,9 +113,25 @@ public class TASDatabase {
     
     
  public Shift getShift(Badge badge){
-         
+     try{          
+            
+            PreparedStatement pstSelect = conn.prepareStatement("SELECT * FROM shift INNER JOIN employee"
+                    + " ON employee.shiftid = shift.id INNER JOIN badge ON badge.id"
+                    + " = employee.badgeid WHERE badge.id = ?");       
+            
+            pstSelect.setString( 1, badge.getId());
+            ResultSet result = pstSelect.executeQuery();
+            result.next();
+              
+            Shift shift  = new Shift (result.getInt(1), result.getString(2), result.getString(3), result.getString(4), result.getInt(5), result.getInt(6), result.getInt(7), result.getString(8), result.getString(9), result.getInt(10));
+        
+            return shift;
+        
+        } catch (Exception e) {
+            System.err.println(e.toString());
             return null;
-
+        }
+         
 }
-
+ 
 }
