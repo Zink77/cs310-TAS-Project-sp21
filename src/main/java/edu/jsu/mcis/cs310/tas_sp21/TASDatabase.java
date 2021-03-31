@@ -133,5 +133,19 @@ public class TASDatabase {
         }
          
 }
+
+public int insertPunch(Punch p){
+
+        int id = p.getId();
+        String badgeID = p.getBadgeID();
+        int terminalID = p.getTerminalID();
+        long originalTime = p.getOriginalTime();
+        long adjustedTime = p.getAdjustedTime();
+        String adjustmentType = p.getAdjustmentType();
+        int punchTypeID = p.getPunchTypeID();
+
+
+        return id;
+}
  
 }
