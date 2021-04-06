@@ -109,6 +109,13 @@ public class TASDatabase {
         
         
     }
+    
+    
+ public Badge getBadge(String badgeNumber) {
+        
+       Badge returningBadge = (Badge)this.badgesData.get(badgeNumber);
+       return returningBadge;
+    }
            
     
     
