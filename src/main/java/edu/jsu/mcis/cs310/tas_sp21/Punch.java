@@ -35,15 +35,15 @@ public class Punch {
         return id;
     }
 
-    public String getBadgeID() {
+    public String getBadgeid() {
         return BadgeID;
     }
 
-    public int getTerminalID() {
+    public int getTerminalid() {
         return terminalID;
     }
 
-    public long getOriginalTime() {
+    public long getOriginaltimestamp() {
         return originalTime;
     }
 
@@ -55,7 +55,7 @@ public class Punch {
         return adjustmentType;
     }
 
-    public int getPunchTypeID() {
+    public int getPunchtypeid() {
         return punchTypeID;
     }
 
@@ -99,16 +99,16 @@ public class Punch {
         SimpleDateFormat formatter = new SimpleDateFormat("E MM/dd/yyyy HH:mm:ss");
         
         
-        if (this.getPunchTypeID() == 1){
-            string.append("#" + this.getBadgeID() + " CLOCKED IN: " + formatter.format(thisDate).toUpperCase());
+        if (this.getPunchtypeid() == 1){
+            string.append("#" + this.getBadgeid() + " CLOCKED IN: " + formatter.format(thisDate).toUpperCase());
         }
         
-        else if (this.getPunchTypeID() == 0){
-            string.append("#" + this.getBadgeID() + " CLOCKED OUT: " + formatter.format(thisDate).toUpperCase());
+        else if (this.getPunchtypeid() == 0){
+            string.append("#" + this.getBadgeid() + " CLOCKED OUT: " + formatter.format(thisDate).toUpperCase());
         }
         
         else{
-            string.append("#" + this.getBadgeID() + " TIMED OUT: " + formatter.format(thisDate).toUpperCase());
+            string.append("#" + this.getBadgeid() + " TIMED OUT: " + formatter.format(thisDate).toUpperCase());
         }
         
         return string.toString();

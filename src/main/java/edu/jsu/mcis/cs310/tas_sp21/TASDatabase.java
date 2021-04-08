@@ -50,11 +50,6 @@ public class TASDatabase {
 
 
     }
-    public Badge getBadge(String badgeid){
-
-        return null;
-        
-    }
             
         
        
@@ -143,16 +138,24 @@ public class TASDatabase {
 
 public int insertPunch(Punch p){
 
-        int id = p.getId();
-        String badgeID = p.getBadgeID();
-        int terminalID = p.getTerminalID();
-        long originalTime = p.getOriginalTime();
-        long adjustedTime = p.getAdjustedTime();
-        String adjustmentType = p.getAdjustmentType();
-        int punchTypeID = p.getPunchTypeID();
-
-
+        try {
+            int id = p.getId();
+            String badgeID = p.getBadgeid();
+            int terminalID = p.getTerminalid();
+            long originalTime = p.getOriginaltimestamp();
+            long adjustedTime = p.getAdjustedTime();
+            String adjustmentType = p.getAdjustmentType();
+            int punchTypeID = p.getPunchtypeid();
+            
+            
+            
+            String query = ("INSERT into punch " + "VALUES (" + id + ", " + badgeID + ", " + terminalID + ", " + originalTime + ", " + adjustedTime + ", " + adjustmentType + ", " + punchTypeID +")");
+            pstSelect = conn.prepareStatement(query);
+           
+        } catch (SQLException ex) {
+            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return id;
 }
- 
+  
 }
