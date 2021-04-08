@@ -1,5 +1,6 @@
 package edu.jsu.mcis.cs310.tas_sp21;
 
+import org.json.simple.*;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -8,6 +9,7 @@ import java.time.LocalTime;
 
 
 public class TASDatabase {
+    JSONObject badgesData = new JSONObject();
 
     Connection conn = null;
     PreparedStatement pstSelect = null, pstUpdate = null;
@@ -15,6 +17,10 @@ public class TASDatabase {
     ResultSetMetaData metadata = null;
 
     public TASDatabase(){
+
+        String query;
+        boolean hasresults;
+        int resultCount;
 
         try {
 
@@ -30,6 +36,33 @@ public class TASDatabase {
             /* Open Connection */
 
             conn = DriverManager.getConnection(server, username, password);
+
+            query = "SELECT * FROM badge";
+            pstSelect = conn.prepareStatement(query);
+            hasresults = pstSelect.execute();
+
+            while ( hasresults || pstSelect.getUpdateCount() != -1 )
+            {
+                if (hasresults)
+                {
+
+                    resultset = pstSelect.getResultSet();
+
+                    while (resultset.next())
+                    {
+                        Badge currentEmployee;
+                        currentEmployee = new Badge(resultset.getString(2), resultset.getString(1));
+                        this.badgesData.put(resultset.getString(1), currentEmployee);
+                    }
+                }
+                else
+                    {
+                    resultCount = pstSelect.getUpdateCount();
+                    if (resultCount == -1) {
+                        break;
+                    }
+                }
+            }
         }
 
         catch (Exception e) {
@@ -106,8 +139,8 @@ public class TASDatabase {
     }
     
     
- public Badge getBadge(String badgeNumber) {
-        
+ public Badge getBadge(String badgeNumber)
+    {
        Badge returningBadge = (Badge)this.badgesData.get(badgeNumber);
        return returningBadge;
     }
@@ -136,6 +169,7 @@ public class TASDatabase {
          
 }
 
+/*
 public int insertPunch(Punch p){
 
         try {
@@ -157,5 +191,7 @@ public int insertPunch(Punch p){
         }
         return id;
 }
+
+ */
   
 }
