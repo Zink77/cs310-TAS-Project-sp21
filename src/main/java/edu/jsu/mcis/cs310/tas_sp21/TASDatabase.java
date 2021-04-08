@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 public class TASDatabase {
     JSONObject badgesData = new JSONObject();
-
+    JSONObject punchData = new JSONObject();
     Connection conn = null;
     PreparedStatement pstSelect = null, pstUpdate = null;
     ResultSet resultset = null;
@@ -51,9 +51,11 @@ public class TASDatabase {
                     while (resultset.next())
                     {
                         Badge currentEmployee;
-                        currentEmployee = new Badge(resultset.getString(2), resultset.getString(1));
+                        currentEmployee = new Badge(resultset.getString(1), resultset.getString(2));
                         this.badgesData.put(resultset.getString(1), currentEmployee);
                     }
+                    
+                    hasresults = !hasresults;
                 }
                 else
                     {
@@ -63,6 +65,42 @@ public class TASDatabase {
                     }
                 }
             }
+            
+            query = "SELECT * FROM punch";
+            pstSelect = conn.prepareStatement(query);
+            hasresults = pstSelect.execute();
+            
+            
+            while ( hasresults || pstSelect.getUpdateCount() != -1 )
+            {
+                if (hasresults)
+                {
+
+                    resultset = pstSelect.getResultSet();
+
+                    while (resultset.next())
+                    {
+                        Punch currentPunch;
+                        Badge passBadge = new Badge(resultset.getString(3), null);
+                        
+                        currentPunch = new Punch(passBadge, resultset.getInt(2), resultset.getInt(5));
+                        currentPunch.setOriginalTime(resultset.getLong(4));
+                        this.punchData.put(resultset.getInt(1), currentPunch);
+                    }
+                    
+                    hasresults = !hasresults;
+                    
+                }
+                else
+                    {
+                    resultCount = pstSelect.getUpdateCount();
+                    if (resultCount == -1) {
+                        break;
+                    }
+                }
+            }
+            
+            
         }
 
         catch (Exception e) {
@@ -172,26 +210,17 @@ public class TASDatabase {
 /*
 public int insertPunch(Punch p){
 
-        try {
-            int id = p.getId();
+
+            int id = 
             String badgeID = p.getBadgeid();
             int terminalID = p.getTerminalid();
             long originalTime = p.getOriginaltimestamp();
-            long adjustedTime = p.getAdjustedTime();
-            String adjustmentType = p.getAdjustmentType();
             int punchTypeID = p.getPunchtypeid();
             
             
             
-            String query = ("INSERT into punch " + "VALUES (" + id + ", " + badgeID + ", " + terminalID + ", " + originalTime + ", " + adjustedTime + ", " + adjustmentType + ", " + punchTypeID +")");
-            pstSelect = conn.prepareStatement(query);
-           
-        } catch (SQLException ex) {
-            Logger.getLogger(TASDatabase.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return id;
 }
-
- */
+*/
+ 
   
 }
