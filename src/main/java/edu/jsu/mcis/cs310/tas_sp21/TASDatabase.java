@@ -11,6 +11,7 @@ import java.time.LocalTime;
 public class TASDatabase {
     JSONObject badgesData = new JSONObject();
     JSONObject punchData = new JSONObject();
+    int newPunchID = 0;
     Connection conn = null;
     PreparedStatement pstSelect = null, pstUpdate = null;
     ResultSet resultset = null;
@@ -66,8 +67,8 @@ public class TASDatabase {
                 }
             }
             
-            query = "SELECT * FROM punch";
-            pstSelect = conn.prepareStatement(query);
+            String query2 = "SELECT * FROM punch";
+            pstSelect = conn.prepareStatement(query2);
             hasresults = pstSelect.execute();
             
             
@@ -80,14 +81,20 @@ public class TASDatabase {
 
                     while (resultset.next())
                     {
+
                         Punch currentPunch;
                         Badge passBadge = new Badge(resultset.getString(3), null);
-                        
+                                           
                         currentPunch = new Punch(passBadge, resultset.getInt(2), resultset.getInt(5));
-                        currentPunch.setOriginalTime(resultset.getLong(4));
+                        
+                        Timestamp converterTime = Timestamp.valueOf(resultset.getString("originaltimestamp"));
+                        
+                        currentPunch.setOriginalTime(converterTime.getTime());
                         this.punchData.put(resultset.getInt(1), currentPunch);
+                        if (resultset.getInt(1)> newPunchID){
+                            newPunchID = resultset.getInt(1);
+                        }
                     }
-                    
                     hasresults = !hasresults;
                     
                 }
@@ -99,7 +106,7 @@ public class TASDatabase {
                     }
                 }
             }
-            
+            newPunchID++;
             
         }
 
@@ -128,31 +135,8 @@ public class TASDatabase {
     
     public Punch getPunch(int punchid){
         
-        String query = "SELECT * FROM punch WHERE id=";
-        query+= punchid;
-        //System.out.println(query);
-        
-        
-        try {
-            pstSelect = conn.prepareStatement(query);
-            ResultSet result = pstSelect.executeQuery();
-            
-            result.next();
-
-
-            Badge someBadge = new Badge(result.getString("badgeid"), "");
-            
-            Punch userPunch = new Punch(someBadge,result.getInt("terminalid"), result.getInt("punchtypeid"));
-
-            Timestamp converterTime = Timestamp.valueOf(result.getString("originaltimestamp"));
-            userPunch.setOriginalTime(converterTime.getTime());
-            System.out.println(userPunch.printOriginalTimestamp());
-            return userPunch;
-            
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            return null;
-        }
+        Punch currentPunch = (Punch)this.punchData.get(punchid);
+        return currentPunch;
         
     }
 
@@ -207,20 +191,13 @@ public class TASDatabase {
          
 }
 
-/*
+
 public int insertPunch(Punch p){
-
-
-            int id = 
-            String badgeID = p.getBadgeid();
-            int terminalID = p.getTerminalid();
-            long originalTime = p.getOriginaltimestamp();
-            int punchTypeID = p.getPunchtypeid();
-            
-            
-            
+    punchData.put(newPunchID, p);
+    newPunchID++;
+    return (newPunchID -1);
 }
-*/
+
  
   
 }
