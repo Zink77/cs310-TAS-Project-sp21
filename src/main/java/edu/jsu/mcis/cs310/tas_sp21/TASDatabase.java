@@ -3,6 +3,7 @@ package edu.jsu.mcis.cs310.tas_sp21;
 import org.json.simple.*;
 import java.sql.*;
 import java.util.*;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.time.LocalTime;
@@ -12,6 +13,7 @@ public class TASDatabase {
     JSONObject badgesData = new JSONObject();
     JSONObject punchData = new JSONObject();
     int newPunchID = 0;
+    int lowestPunchId = 0;
     Connection conn = null;
     PreparedStatement pstSelect = null, pstUpdate = null;
     ResultSet resultset = null;
@@ -198,6 +200,36 @@ public int insertPunch(Punch p){
     return (newPunchID -1);
 }
 
- 
-  
+public ArrayList getDailyPunchList(Badge b, long ts)
+    {
+        ArrayList<Punch> returningPunchList = new ArrayList();
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        GregorianCalendar calendarToCheckWith = new GregorianCalendar();
+        calendarToCheckWith.setTimeInMillis(ts);
+        java.util.Date dateToCheckWith = calendarToCheckWith.getTime();
+
+        for (int i = 0; i < this.punchData.size(); i++)
+        {
+            if (this.punchData.containsKey(this.lowestPunchId + i))
+            {
+                Punch currentPunch = (Punch) this.punchData.get(this.lowestPunchId + i);
+                String currentPunchBadgeId = (String) currentPunch.getBadgeid();
+
+                if (currentPunchBadgeId.equals((String) b.getId()))
+                {
+                    GregorianCalendar calendarOfCurrentPunch = new GregorianCalendar();
+                    calendarOfCurrentPunch.setTimeInMillis(currentPunch.getOriginaltimestamp());
+                    java.util.Date currentPunchDate = calendarOfCurrentPunch.getTime();
+
+                    if (fmt.format(dateToCheckWith).equals(fmt.format(currentPunchDate)))
+                    {
+                        returningPunchList.add(currentPunch);
+                    }
+                }
+            }
+        }
+        return returningPunchList;
+    }
+
+   
 }
