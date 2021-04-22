@@ -13,39 +13,49 @@ import java.util.ArrayList;
  */
 public class TASLogic {
 
-    public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, Shift shift){
+    public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, Shift shift) {
 
         int totalMinutes = 0;
+        long millis = 0;
         int punchCounter = 0;
         long clockInTime = 0;
         long clockOutTime = 0;
 
-        for (int i = 0; i < dailypunchlist.size(); i++){
+        for (int i = 0; i < dailypunchlist.size(); i++) {
 
             /* CLOCK IN */
-            if (dailypunchlist.get(i).getPunchtypeid() == 1){
+            if (dailypunchlist.get(i).getPunchtypeid() == 1) {
 
                 clockInTime = dailypunchlist.get(i).getAdjustedTime();
                 punchCounter++;
             }
 
             /* CLOCK OUT */
-            if (dailypunchlist.get(i).getPunchtypeid() == 0){
+            if (dailypunchlist.get(i).getPunchtypeid() == 0) {
 
                 clockOutTime = dailypunchlist.get(i).getAdjustedTime();
                 punchCounter++;
             }
 
-            if (clockInTime != 0 && clockOutTime != 0){
+            /* CALCULATING SHIFT LENGTH IN MILLISECONDS*/
+            if (clockInTime != 0 && clockOutTime != 0) {
 
-                totalMinutes = (int) ((clockOutTime - clockInTime)/60);
+                millis += (clockOutTime - clockInTime);
             }
+        }
 
-            if (punchCounter == 2)
-                totalMinutes -= shift.getLunchduration();
+        /* CALCULATING SHIFT LENGTH FROM MILLISECONDS TO MINUTES*/
+        if (millis != 0) {
+
+            totalMinutes = (int) (millis/60000);
+        }
+
+        /*SUBTRACTING LUNCH FROM TOTAL MINUTES*/
+        if (punchCounter == 2 && totalMinutes > shift.getLunchdeduct()) {
+
+            totalMinutes -= shift.getLunchduration();
         }
 
         return totalMinutes;
     }
-
 }
