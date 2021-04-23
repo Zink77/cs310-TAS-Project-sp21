@@ -140,12 +140,12 @@ public class Feature2 {
         ArrayList<Punch> p1 = db.getDailyPunchList(b, ts.getTimeInMillis());
         
         /* Export Punch List #1 Contents to StringBuilder */
-        
+                
         for (Punch p : p1) {
             s1.append(p.printOriginalTimestamp());
             s1.append("\n");
         }
-        
+         
         /* Create Punch List #2 (created manually) */
         
         ArrayList<Punch> p2 = new ArrayList<>();

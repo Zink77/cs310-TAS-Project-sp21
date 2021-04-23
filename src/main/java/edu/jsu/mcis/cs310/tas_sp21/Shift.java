@@ -31,6 +31,14 @@ public class Shift
         this.dock = dock;
         this.lunchstart = LocalTime.parse(lunchstart);
         this.lunchstop = LocalTime.parse(lunchstop);
+        
+        GregorianCalendar stopCalendar = new GregorianCalendar();
+        GregorianCalendar startCalendar = new GregorianCalendar();
+        
+        stopCalendar.set(0, 0, 0, this.lunchstop.getHour(), this.lunchstop.getMinute(), this.lunchstop.getSecond());
+        startCalendar.set(0, 0, 0, this.lunchstart.getHour(), this.lunchstart.getMinute(), this.lunchstart.getSecond());
+        this.lunchduration = (int) (stopCalendar.getTimeInMillis() - startCalendar.getTimeInMillis());
+        this.lunchduration = this.lunchduration/60000;
         this.lunchdeduct = lunchdeduct;
     }
     

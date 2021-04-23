@@ -20,6 +20,7 @@ public class TASLogic {
         int punchCounter = 0;
         long clockInTime = 0;
         long clockOutTime = 0;
+        boolean tookLunch = false;
 
         for (int i = 0; i < dailypunchlist.size(); i++) {
 
@@ -38,10 +39,18 @@ public class TASLogic {
             }
 
             /* CALCULATING SHIFT LENGTH IN MILLISECONDS*/
-            if (clockInTime != 0 && clockOutTime != 0) {
+            if (clockInTime != 0 && clockOutTime != 0 && (i+1) % 2 ==0) {
 
                 millis += (clockOutTime - clockInTime);
+                System.out.println(clockInTime/60000);
+                System.out.println(clockOutTime/60000);
             }
+
+            if (i==3){
+                tookLunch = true;
+            }
+                
+            
         }
 
         /* CALCULATING SHIFT LENGTH FROM MILLISECONDS TO MINUTES*/
@@ -49,13 +58,18 @@ public class TASLogic {
 
             totalMinutes = (int) (millis/60000);
         }
-
+        
         /*SUBTRACTING LUNCH FROM TOTAL MINUTES*/
-        if (punchCounter == 2 && totalMinutes > shift.getLunchdeduct()) {
+        
+        System.out.println(totalMinutes);
+        System.out.println(shift.getLunchdeduct());
+        System.out.println(shift.getLunchduration());
+        
+        if (punchCounter >= 2 && totalMinutes > shift.getLunchdeduct() && !tookLunch){
 
-            totalMinutes -= shift.getLunchduration();
+            totalMinutes = (totalMinutes - shift.getLunchduration());
         }
-
+        System.out.println(totalMinutes);
         return totalMinutes;
     }
 }
