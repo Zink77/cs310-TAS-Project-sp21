@@ -224,25 +224,6 @@ public class TASDatabase {
         
         
         
-        /*
-        for (int i = 0; i < this.punchData.size(); i++){
-            
-            System.out.println("youre in the loop");
-            if (this.punchData.containsKey(this.lowestPunchId + i)){
-                
-                System.out.println("youre in the loop");
-                
-                Punch currentPunch = (Punch) this.punchData.get(this.lowestPunchId + i);
-                System.out.println(startOfDay.getTimeInMillis());
-                System.out.println(currentPunch.getOriginaltimestamp());
-                System.out.println(endOfDay.getTimeInMillis());
-                if(currentPunch.getOriginaltimestamp() >= startOfDay.getTimeInMillis() && currentPunch.getOriginaltimestamp() < endOfDay.getTimeInMillis() && currentPunch.getBadgeid().equals((String) b.getId())){
-                    returningPunchList.add(currentPunch);
-                }
-                
-            }
-        */
-        
         for (int i = 0; i < HighestPunchID; i++)
         {
             if (this.punchData.containsKey(this.lowestPunchId + i))
