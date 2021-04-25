@@ -14,6 +14,7 @@ public class TASDatabase {
     JSONObject badgesData = new JSONObject();
     JSONObject punchData = new JSONObject();
     int newPunchID = 0;
+    int HighestPunchID = 0;
     int lowestPunchId = 0;
     Connection conn = null;
     PreparedStatement pstSelect = null, pstUpdate = null;
@@ -94,12 +95,17 @@ public class TASDatabase {
                                            
                         currentPunch = new Punch(passBadge, resultset.getInt(2), resultset.getInt(5));
                         
+                        currentPunch.setId(resultset.getInt(1));
+                        
                         Timestamp converterTime = Timestamp.valueOf(resultset.getString("originaltimestamp"));
                         
                         currentPunch.setOriginalTime(converterTime.getTime());
                         this.punchData.put(resultset.getInt(1), currentPunch);
                         if (resultset.getInt(1)> newPunchID){
                             newPunchID = resultset.getInt(1);
+                        }
+                        if (resultset.getInt(1)< lowestPunchId){
+                            lowestPunchId = resultset.getInt(1);
                         }
                     }
                     hasresults = !hasresults;
@@ -113,6 +119,7 @@ public class TASDatabase {
                     }
                 }
             }
+            HighestPunchID = newPunchID;
             newPunchID++;
             
         }
@@ -206,26 +213,58 @@ public class TASDatabase {
         calendarToCheckWith.setTimeInMillis(ts);
         java.util.Date dateToCheckWith = calendarToCheckWith.getTime();
 
-        for (int i = 0; i < this.punchData.size(); i++)
+
+        GregorianCalendar startOfDay = new GregorianCalendar();
+        startOfDay.setTimeInMillis(ts);
+        
+        
+        GregorianCalendar endOfDay = new GregorianCalendar();
+        endOfDay.setTimeInMillis(ts);
+        endOfDay.add(Calendar.DAY_OF_MONTH, 1);
+        
+        
+        
+        /*
+        for (int i = 0; i < this.punchData.size(); i++){
+            
+            System.out.println("youre in the loop");
+            if (this.punchData.containsKey(this.lowestPunchId + i)){
+                
+                System.out.println("youre in the loop");
+                
+                Punch currentPunch = (Punch) this.punchData.get(this.lowestPunchId + i);
+                System.out.println(startOfDay.getTimeInMillis());
+                System.out.println(currentPunch.getOriginaltimestamp());
+                System.out.println(endOfDay.getTimeInMillis());
+                if(currentPunch.getOriginaltimestamp() >= startOfDay.getTimeInMillis() && currentPunch.getOriginaltimestamp() < endOfDay.getTimeInMillis() && currentPunch.getBadgeid().equals((String) b.getId())){
+                    returningPunchList.add(currentPunch);
+                }
+                
+            }
+        */
+        
+        for (int i = 0; i < HighestPunchID; i++)
         {
             if (this.punchData.containsKey(this.lowestPunchId + i))
             {
-                Punch currentPunch = (Punch) this.punchData.get(this.lowestPunchId + i);
-                String currentPunchBadgeId = (String) currentPunch.getBadgeid();
 
+                Punch currentPunch = getPunch((this.lowestPunchId + i));
+                String currentPunchBadgeId = (String) currentPunch.getBadgeid();
+                
                 if (currentPunchBadgeId.equals((String) b.getId()))
-                {
+                {                
                     GregorianCalendar calendarOfCurrentPunch = new GregorianCalendar();
                     calendarOfCurrentPunch.setTimeInMillis(currentPunch.getOriginaltimestamp());
                     java.util.Date currentPunchDate = calendarOfCurrentPunch.getTime();
-
                     if (fmt.format(dateToCheckWith).equals(fmt.format(currentPunchDate)))
                     {
+                        currentPunch.printOriginalTimestamp();
                         returningPunchList.add(currentPunch);
                     }
                 }
             }
         }
+        
 
         return returningPunchList;
     }

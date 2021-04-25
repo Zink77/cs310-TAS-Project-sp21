@@ -42,8 +42,7 @@ public class TASLogic {
             if (clockInTime != 0 && clockOutTime != 0 && (i+1) % 2 ==0) {
 
                 millis += (clockOutTime - clockInTime);
-                System.out.println(clockInTime/60000);
-                System.out.println(clockOutTime/60000);
+
             }
 
             if (i==3){
@@ -61,15 +60,12 @@ public class TASLogic {
         
         /*SUBTRACTING LUNCH FROM TOTAL MINUTES*/
         
-        System.out.println(totalMinutes);
-        System.out.println(shift.getLunchdeduct());
-        System.out.println(shift.getLunchduration());
         
         if (punchCounter >= 2 && totalMinutes > shift.getLunchdeduct() && !tookLunch){
 
             totalMinutes = (totalMinutes - shift.getLunchduration());
         }
-        System.out.println(totalMinutes);
+
         return totalMinutes;
     }
 }
